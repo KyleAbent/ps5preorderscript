@@ -33,7 +33,9 @@ public class doTest {
        }
        public void doIt(){
             
-            
+            //9.25-- there's a fault in this code in that the preorder button when clicked isn't always successful
+		//so a failed notification pops up requiring clicks until it works
+		//then there's more after that. all of which I have modified on my own version not at the moment on git.
             
             
             String Step = "A";
