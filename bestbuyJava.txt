@@ -15,9 +15,34 @@ import org.openqa.selenium.support.ui.WebDriverWait;
  * @author kylea
  */
 public class doTest {
+    //9.25
+    // I'm sorry the last version I was told failed at the last step "P" complete order button
+    // I tried to fix that from happening.
     
+    //IF any failures occur within the order details page (name address and all that) then it wont restart anymore.
+    //I'm sorry, It was dumb to restart once it made it to the order page.
+    //This will now FREEZE if it fails on the order screen rather than RESTART. IT will play the alarm on restart.
+
+            
         WebDriver driver;
         WebDriverWait wait;
+        
+        //I tried to make editing these fields easier. Update all the details here.
+        //I'm sorry I haven't tested logging into an account. IT maybe easier if it works. I Don't know.
+        String FirstName = "Saint";
+        String LastName = "Andrews";
+        String Address = "431 E Congress St";
+        String City = "Detroit";
+        String State = "Michigan";
+        String Zip = "48226";
+        String Email = "fakeemail@mail.com";
+        String CreditCard = "4111111111111111";
+        String Phone = "3139618961";
+        String expirationYear = "2020";
+        String expirationMonth = "11";
+        String CVV = "123";
+        
+        boolean isDone = false;       
                 
        public static void main(String[] args){
        doTest tS = new doTest();
@@ -26,152 +51,143 @@ public class doTest {
        public doTest()  {
            System.setProperty("webdriver.chrome.driver", "D:\\Python\\Chromedriver\\chromedriver.exe");
            driver = new ChromeDriver();
-           wait = new WebDriverWait(driver, 10);
+           wait = new WebDriverWait(driver, 30);
            this.doIt();
        }
        public void doIt(){
-            
-            
-            
-            
-            String Step = "A";
-            
-             boolean isDone = false;
+            int Step = 1;
               while  (!isDone){
                   try{
-                      driver.get("https://www.bestbuy.com/site/sony-playstation-5-console/6426149.p?skuId=6426149");
-                      //driver.get("https://www.target.com/p/playstation-5-hd-camera/-/A-81114478");
+                      //driver.get("https://www.bestbuy.com/site/sony-playstation-5-console/6426149.p?skuId=6426149");
+                      driver.get("https://www.bestbuy.com/site/marvels-spider-man-miles-morales-ultimate-launch-edition-playstation-5/6430159.p?skuId=6430159");
                       
                       String registryXpath = "//button[@data-test='registryListButton']";
                       String preorderXpath ="(//div[@Class='fulfillment-add-to-cart-button']//button)[1]";
                       
-                      Step = "A";
+                      Step = 2;
                       wait.until(ExpectedConditions.presenceOfElementLocated (By.xpath(preorderXpath)));
-                      System.out.println("Found preorder Button ");
-                      
-                      Step = "B";
                       WebElement preorderButton = driver.findElement(By.xpath(preorderXpath));
-                      System.out.println("Found Preorder Button!!!!");
+                      System.out.println("Found preorder Button ");
                       preorderButton.click();
                     
                       
-                      Step = "C";
+                      Step = 3;
+                      System.out.println("Clicked preorder Button");
                       String viewCartXPATH = "//div[@class='go-to-cart-button']//a";
                       wait.until(ExpectedConditions.presenceOfElementLocated (By.xpath(viewCartXPATH)));
                       WebElement viewCartButton = driver.findElement(By.xpath(viewCartXPATH));
                       viewCartButton.click();
                       
-                      Step = "D";
+                      Step = 4;
                       String shippingXpath = "//input[contains(@id,'shipping')]";
                       wait.until(ExpectedConditions.presenceOfElementLocated (By.xpath(shippingXpath)));
                       WebElement shippingBtn = driver.findElement(By.xpath(shippingXpath));
                       shippingBtn.click();
                       
                       
-                      Step = "E";
+                      Step = 5;
                       String checkoutXpath = "//button[@data-track='Checkout - Top']";
                       wait.until(ExpectedConditions.presenceOfElementLocated (By.xpath(checkoutXpath)));
                       WebElement checkoutBtn = driver.findElement(By.xpath(checkoutXpath));
                       checkoutBtn.click();
                       
                       
-                      Step = "F";
+                      Step = 6;
                       String guestXpath = "//button[contains(text(),'Continue')]";
                       wait.until(ExpectedConditions.presenceOfElementLocated (By.xpath(guestXpath)));
                       WebElement guestBTN = driver.findElement(By.xpath(guestXpath));
                       guestBTN.click();
                       
                       
-                      Step = "G";
+                      Step = 7;
                       String firstNameXpath = "//input[contains(@id,'firstName')]";
                       wait.until(ExpectedConditions.presenceOfElementLocated (By.xpath(firstNameXpath)));
                       WebElement fNBt = driver.findElement(By.xpath(firstNameXpath));
-                      fNBt.sendKeys("");
+                      fNBt.sendKeys(FirstName);
                       
-                      Step = "H";
+                      Step = 8;
                       String lastNameXpath = "//input[contains(@id,'lastName')]";
                       WebElement lNBt = driver.findElement(By.xpath(lastNameXpath));
-                      lNBt.sendKeys("");
+                      lNBt.sendKeys(LastName);
                       
-                      Step = "I";
+                      Step = 9;
                       String addressXpath = "//input[contains(@id,'street')]";
                       WebElement adBt = driver.findElement(By.xpath(addressXpath));
-                      adBt.sendKeys("");
+                      adBt.sendKeys(Address);
                       
-                      Step = "I";
+                      Step = 10;
                       String cityXpath = "//input[contains(@id,'city')]";
                       WebElement ciBt = driver.findElement(By.xpath(cityXpath));
-                      ciBt.sendKeys("");
+                      ciBt.sendKeys(City);
                       
-                      Step = "I";
+                      Step = 11;
                       String stateXpath = "//*[@class='c-dropdown v-medium']";
                       WebElement stBt = driver.findElement(By.xpath(stateXpath));
                       //stBt.click();
-                      stBt.sendKeys(""); //JS Set value?
+                      stBt.sendKeys(State); //JS Set value?
                       
-                      Step = "I";
+                      Step = 12;
                       String zipcodeXpath = "//input[contains(@id,'zip')]";
                       WebElement ziBt = driver.findElement(By.xpath(zipcodeXpath));
-                      ziBt.sendKeys("");
+                      ziBt.sendKeys(Zip);
                       
-                      Step = "I[B]";
+                      Step = 13;
                       String emailXpath = "//input[contains(@id,'email')]";
                       WebElement emBt = driver.findElement(By.xpath(emailXpath));
-                      emBt.sendKeys("");
+                      emBt.sendKeys(Email);
                       
-                      Step = "J";
+                      Step = 14;
                       String phoneXpath = "//input[contains(@id,'phone')]";
                       WebElement phBt = driver.findElement(By.xpath(phoneXpath));
-                      phBt.sendKeys("");
+                      phBt.sendKeys(Phone);
                       
                      //TimeUnit.SECONDS.sleep(30);
                         
-                      Step = "K";
+                      Step = 15;
                       String continueXpath = "(//span[contains(text(),'Continue')]//..)[1]";
                       WebElement continueBtn = driver.findElement(By.xpath(continueXpath));
                       continueBtn.click();
                       
-                      Step = "L";
+                      Step = 16;
                       String ccXpath = "//input[@id='optimized-cc-card-number']";
                       wait.until(ExpectedConditions.presenceOfElementLocated (By.xpath(ccXpath)));
                       WebElement ccInput = driver.findElement(By.xpath(ccXpath));
-                      ccInput.sendKeys("");
+                      ccInput.sendKeys(CreditCard);
                       
                       
-                      Step = "M";
+                      Step = 17;
                       String expMoXpath = "//*[@name='expiration-month']";
                       WebElement expBtnMo = driver.findElement(By.xpath(expMoXpath));
-                      expBtnMo.sendKeys("");
+                      expBtnMo.sendKeys(expirationMonth);
                       
-                      Step = "N";
+                      Step = 18;
                        String expYear = "//*[@name='expiration-year']";
                        WebElement expBtnYr = driver.findElement(By.xpath(expYear));
-                       expBtnYr.sendKeys("");
+                       expBtnYr.sendKeys(expirationYear);
                        
                        
-                       Step = "O";
+                       Step = 19;
                        String CCVXp = "//input[@id='credit-card-cvv']";
                        WebElement CcvIn = driver.findElement(By.xpath(CCVXp));
-                       CcvIn.sendKeys("");
+                       CcvIn.sendKeys(CVV);
                        
-                       Step = "P";
+                       Step = 20;
                        String completeorder = "//button[contains(@data-track,'Place your Order')]";
+                       wait.until(ExpectedConditions.presenceOfElementLocated (By.xpath(completeorder)));
                        WebElement completeBtn = driver.findElement(By.xpath(completeorder));
                        completeBtn.click();
                        
-                       
                       
                       
                       
                       
-                      
-                    
+                     
                       String filePath = "C:\\Users\\kylea\\Downloads\\alarm.wav"; 
                        AudioInputStream alarm =  AudioSystem.getAudioInputStream(new File(filePath).getAbsoluteFile()); 
                         Clip clip = AudioSystem.getClip(); 
                         clip.open(alarm); 
                         clip.loop(Clip.LOOP_CONTINUOUSLY); 
-                       
+                      
                       
                         isDone = true;
                       
@@ -187,17 +203,34 @@ public class doTest {
                         Clip failedClip = AudioSystem.getClip(); 
                         failedClip.open(failed); 
                         failedClip.start();
-                       TimeUnit.SECONDS.sleep(45);
+                       TimeUnit.SECONDS.sleep(300);
                       }
                       catch(Exception e){
                           System.out.println("exception " + e);
                       }
-                       
+                     if (Step < 7) {
+                      System.out.println("Looping. Did not make it to order screen.");
                       this.doIt();
+                     }
                      // driver.quit();
                       //System.exit(0);
                   }
-                  //isDone = true;
+                  if (Step > 6){
+                       System.out.println("Frozen-- Found error on order screen. But it's better to not loop from here.");
+                    isDone = true;
+                    
+                    try{
+                      String filePath = "C:\\Users\\kylea\\Downloads\\alarm.wav"; 
+                       AudioInputStream alarm =  AudioSystem.getAudioInputStream(new File(filePath).getAbsoluteFile()); 
+                        Clip clip = AudioSystem.getClip(); 
+                        clip.open(alarm); 
+                        clip.loop(Clip.LOOP_CONTINUOUSLY); 
+                    }
+                    catch(Exception e){
+                        
+                    }
+                        
+                  }
               }
        }
 
