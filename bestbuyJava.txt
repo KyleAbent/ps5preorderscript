@@ -21,7 +21,7 @@ public class doTest {
     
     //IF any failures occur within the order details page (name address and all that) then it wont restart anymore.
     //I'm sorry, It was dumb to restart once it made it to the order page.
-    //This will now FREEZE if it fails on the order screen rather than RESTART. IT will play the alarm on restart.
+    //This will now FREEZE if it fails on the order screen rather than RESTART. IT will play the alarm on freeze.
 
             
         WebDriver driver;
