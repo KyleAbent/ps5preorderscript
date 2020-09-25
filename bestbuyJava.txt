@@ -155,7 +155,7 @@ public class doTest {
                        CcvIn.sendKeys("");
                        
                        Step = "P";
-                       String completeorder = "(//span[text()='Place Your Order'])[1]";
+                       String completeorder = "//button[contains(@data-track,'Place your Order')]";
                        WebElement completeBtn = driver.findElement(By.xpath(completeorder));
                        completeBtn.click();
                        
