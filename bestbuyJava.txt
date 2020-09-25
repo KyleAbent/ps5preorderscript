@@ -67,12 +67,10 @@ public class doTest {
                       Step = 2;
                       wait.until(ExpectedConditions.presenceOfElementLocated (By.xpath(preorderXpath)));
                       WebElement preorderButton = driver.findElement(By.xpath(preorderXpath));
-                      System.out.println("Found preorder Button ");
                       preorderButton.click();
                     
                       
                       Step = 3;
-                      System.out.println("Clicked preorder Button");
                       String viewCartXPATH = "//div[@class='go-to-cart-button']//a";
                       wait.until(ExpectedConditions.presenceOfElementLocated (By.xpath(viewCartXPATH)));
                       WebElement viewCartButton = driver.findElement(By.xpath(viewCartXPATH));
@@ -203,7 +201,7 @@ public class doTest {
                         Clip failedClip = AudioSystem.getClip(); 
                         failedClip.open(failed); 
                         failedClip.start();
-                       TimeUnit.SECONDS.sleep(300);
+                       TimeUnit.SECONDS.sleep(60);
                       }
                       catch(Exception e){
                           System.out.println("exception " + e);
