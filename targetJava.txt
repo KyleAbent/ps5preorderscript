@@ -16,16 +16,16 @@ import org.openqa.selenium.support.ui.WebDriverWait;
  *
  * @author kylea
  */
-public class doTest {
+public class doTarget {
     
         WebDriver driver;
         WebDriverWait wait;
                 
        public static void main(String[] args){
-       doTest tS = new doTest();
+       doTest tS = new doTarget();
    }
 
-       public doTest()  {
+       public doTarget()  {
            System.setProperty("webdriver.chrome.driver", "D:\\Python\\Chromedriver\\chromedriver.exe");
            driver = new ChromeDriver();
            wait = new WebDriverWait(driver, 10);
@@ -114,7 +114,7 @@ public class doTest {
                        TimeUnit.SECONDS.sleep(45);
                       }
                       catch(Exception e){
-                          System.out.println("exception " + e);
+                          System.out.println("exception " + ee);
                       }
                        
                       this.doIt();
