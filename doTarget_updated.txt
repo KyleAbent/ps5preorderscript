@@ -315,7 +315,7 @@ public void doStepTwentyOne(){
                     if (SkipStep == 0 || SkipStep <= 4){doStepFour();}
                     if (SkipStep == 0 || SkipStep <= 5){doStepFive();}
                     if (SkipStep == 0 || SkipStep <= 6){doStepSix();}
-                    if (SkipStep == 7){doStepSeven(); }
+                    if (SkipStep <= 7){doStepSeven(); }
                     if (SkipStep <= 8){doStepEight();}
                       doStepNine(); 
                    if (SkipStep<= 18){doStepEighteen();doStepNineteen();}
