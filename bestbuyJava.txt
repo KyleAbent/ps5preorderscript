@@ -119,7 +119,7 @@ public class doTest {
                       ciBt.sendKeys(City);
                       
                       Step = 11;
-                      String stateXpath = "//*[@class='c-dropdown v-medium c-dropdown v-medium smart-select']";
+                      String stateXpath = "//*[@name='state']";
                       WebElement stBt = driver.findElement(By.xpath(stateXpath));
                       //stBt.click();
                       stBt.sendKeys(State); //JS Set value?
