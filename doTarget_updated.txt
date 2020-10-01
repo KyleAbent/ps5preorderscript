@@ -201,7 +201,7 @@ public void doStepOne(){
 public void doStepTwo(){
     String preorderXpath ="//button[@data-test='preorderButton']";
     currentStep = 2;
-    shortWait.until(ExpectedConditions.presenceOfElementLocated (By.xpath(preorderXpath)));
+    wait.until(ExpectedConditions.presenceOfElementLocated (By.xpath(preorderXpath)));
     WebElement preorderButton = driver.findElement(By.xpath(preorderXpath));    
     preorderButton.click();
 }
@@ -209,7 +209,7 @@ public void doStepThree(){
     currentStep = 3;
     String errorX ="//button[@data-test='errorContent-okButton']";
     //"//div[@data-test='flyoutTypeAddToCartError']";
-    shortWait.until(ExpectedConditions.presenceOfElementLocated (By.xpath(errorX)));
+    wait.until(ExpectedConditions.presenceOfElementLocated (By.xpath(errorX)));
     WebElement errorB = driver.findElement(By.xpath(errorX)); 
     if (errorB.isDisplayed()){
       errorB.click();
@@ -220,7 +220,7 @@ public void doStepThree(){
 public void doStepFour(){
     currentStep = 4;
     String declineCoverageXPATH = "//button[@data-test=\'espModalContent-declineCoverageButton\']";
-    shortWait.until(ExpectedConditions.presenceOfElementLocated (By.xpath(declineCoverageXPATH)));
+    wait.until(ExpectedConditions.presenceOfElementLocated (By.xpath(declineCoverageXPATH)));
     WebElement declineCoverageButton = driver.findElement(By.xpath(declineCoverageXPATH));
     declineCoverageButton.click();
 }
@@ -273,7 +273,7 @@ public void doStepNine(){
     //If it fails here i should do a shortwait if not her ethen skip to 19
 }
 public void doStepEighteen(){
-    currentStep = 18;
+        currentStep = 18;
         String cardXpath = "//input[@id='creditCardInput-cardNumber']";
         shortWait.until(ExpectedConditions.presenceOfElementLocated (By.xpath(cardXpath)));
         WebElement cardB = driver.findElement(By.xpath(cardXpath));
@@ -339,7 +339,7 @@ public void doSound(){
         boolean loop = false;
         boolean doAudio = true;
        // if (Step < 4){
-        failedPath = "C:\\Users\\kylea\\Downloads\\speech.wav";
+        failedPath = "sound\\speech.wav";
         //}
          if (currentStep == 8){//Cart Screen - Error unavail
             //loop = true;
@@ -349,22 +349,22 @@ public void doSound(){
             else if (!isUnavail){
                 sleepLength = 0; //down below will call doStart at step 9 to click proceed
             }
-            failedPath = "C:\\Users\\kylea\\Downloads\\alarm.wav"; 
+            failedPath = "sound\\alarm.wav"; 
             doAudio = false;
         }
         else if (currentStep >= 9){//9 is cant find error and fails at finding checkout button. may throw false positive. it's ok.
             sleepLength = 0;
-            failedPath = "C:\\Users\\kylea\\Downloads\\alarm.wav"; 
+            failedPath = "sound\\alarm.wav"; 
             isDone = true;
             doAudio = true;
             //driver.navigate().refresh();
         }
         else if (currentStep == 2){
-            failedPath = "C:\\Users\\kylea\\Downloads\\speech.wav"; 
+            failedPath = "sound\\speech.wav"; 
             sleepLength = Integer.parseInt(sLength.getText());
         }
         else{
-            failedPath = "C:\\Users\\kylea\\Downloads\\alarm.wav"; 
+            failedPath = "sound\\alarm.wav"; 
             if (currentStep <= 3 || currentStep >=9){
                 loop = true;
             }
@@ -387,16 +387,12 @@ public void doSound(){
    }
 
 public void doLoop (){
-
-    if (currentStep <= 2){
-     System.out.println("Didn't find preorder button. Reloading page.");
-     this.doALap(0);
-    }
      // driver.quit();
       //System.exit(0);
     if ( ( currentStep >= 4 && currentStep < 7 )|| currentStep == 8 || currentStep == 20 || currentStep == 2 || currentStep == 18) {
       int tempStep = currentStep;
       if (tempStep == 2){
+           System.out.println("Didn't find preorder button. Reloading page.");
            driver.navigate().refresh();
       }
       else if (tempStep == 3){ // error unavail
@@ -431,7 +427,7 @@ public void doLoop (){
 public void startIgnition(){
     doSleep(1);
     JOptionPane.showMessageDialog( null, "You have 15 seconds to login before automation starts.", "Warning", JOptionPane.WARNING_MESSAGE );
-    System.setProperty("webdriver.chrome.driver", "D:\\Python\\Chromedriver\\chromedriver.exe");
+    System.setProperty("webdriver.chrome.driver", "chromedriver\\chromedriver.exe");
     driver = new ChromeDriver();
     driver.get("https://www.target.com"); //if it adds or i get it to add..
     //driver.get("https://www.target.com/p/playstation-5-console/-/A-81114595");
@@ -458,7 +454,7 @@ public void actionPerformed(ActionEvent evt) {
 
 
             } catch (NumberFormatException e) {
-                OptionPane.showMessageDialog( null, "Invalid Input!", "Error", JOptionPane.ERROR_MESSAGE );
+                JOptionPane.showMessageDialog( null, "Invalid Input!", "Error", JOptionPane.ERROR_MESSAGE );
             }
         }
     if( evt.getActionCommand().equals( "Stop" ) ) {
