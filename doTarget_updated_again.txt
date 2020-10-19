@@ -1,0 +1,617 @@
+//Note: ps5 hardcoded to be out of stock. Works with Headset, I was able to get myself one 10.18. Using this script.
+//However there's a step twent and a half which requires "Save and Continue" which I did myself manually rather than automation
+
+import java.awt.Container;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import java.io.File;
+import java.io.IOException;
+import java.util.concurrent.TimeUnit;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPasswordField;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.*;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+
+/**
+ *
+ * @author kylea
+ */
+public class doTarget extends JFrame implements ActionListener {
+    
+//-------JButton------//
+   public JButton engineBtn;
+   
+//------JTextField----//
+   private JPasswordField ccField;
+   private JPasswordField cvvField;
+   
+   private JTextField Wait;
+   private JTextField sWait;
+   private JTextField serWait;
+   private JTextField sLength;
+   
+//-------JLabel------//
+   //JLabel title = new JLabel("PS5 Preorder Script: Target");
+   JLabel wLabel = new JLabel("Wait");
+    JLabel sLabel = new JLabel("ShortWait");
+    JLabel serLabel = new JLabel("ShorterWait");
+    JLabel sleepLabel = new JLabel("SleepLength");
+
+   JLabel CC = new JLabel("Enter CC: ");
+   JLabel CVV = new JLabel("Enter CVV: ");
+   
+   
+//------Font----//
+   private Font f1 = new Font("serif",Font.BOLD,12);
+
+   
+    WebDriver driver;
+    WebDriverWait wait;
+    WebDriverWait shortWait;
+    WebDriverWait shorterWait;
+    int sleepLength = 45;
+    boolean isUnavail = false;
+    boolean isDone = false;
+    int currentStep = 0;
+    String[] stepStrings = { "Preorder", "SFL-AddToCart"};
+    String[] choicesStrings = { "PS5 Physical", "PS5 Digital", "PS5 Headset"};
+    JComboBox stepList;
+    JComboBox choiceList;
+    String URL = "https://www.target.com/p/playstation-5-console/-/A-81114595";
+    JTextArea feedback;
+    
+    public static void main(String[] args){
+    doTarget tS = new doTarget();
+      tS.setSize(180,300);
+      tS.setVisible(true);
+      tS.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); 
+      tS.setResizable(false);
+   }
+
+public doTarget()  {
+     setTitle("Target"); 
+     
+      Container myContainer = getContentPane();
+      myContainer.setLayout(new FlowLayout());
+      
+      //ButtonClicker myListener = new ButtonClicker();
+      //title.setFont(f1);
+      //myContainer.add(title);
+   
+      myContainer.add(wLabel);
+      Wait = new JTextField(2);
+      Wait.setText("10");
+      myContainer.add(Wait);
+      
+      myContainer.add(sLabel);
+      sWait = new JTextField(2);
+      sWait.setText("4");
+      myContainer.add(sWait);
+      
+      myContainer.add(serLabel);
+      serWait = new JTextField(2);
+      serWait.setText("2");
+      myContainer.add(serWait);
+      
+      myContainer.add(sleepLabel);
+      sLength = new JTextField(2);
+      sLength.setText("30");
+      myContainer.add(sLength);
+      
+      myContainer.add(CC);
+      ccField = new JPasswordField(16);
+      myContainer.add(ccField);
+      
+      //ccField.addActionListener(this);
+      
+      myContainer.add(CVV);
+       
+      cvvField = new JPasswordField (3);
+      myContainer.add(cvvField);
+      //cvvField.addActionListener(myListener);
+      
+      
+      choiceList = new JComboBox(choicesStrings);
+      choiceList.setSelectedIndex(0);
+      choiceList.setVisible(false);
+      choiceList.addActionListener(new ActionListener() {
+          
+            public void actionPerformed(ActionEvent evt) {
+                switch(choiceList.getSelectedIndex()){
+                    case 0:
+                        URL = "https://www.target.com/p/playstation-5-console/-/A-81114595";
+                         break;
+                    case 1:
+                        URL = "https://www.target.com/p/playstation-5-digital-edition-console/-/A-81114596#lnk=sametab";
+                         break;
+                    case 2:
+                        URL = "https://www.target.com/p/sony-pulse-3d-wireless-gaming-headset-for-playstation-5/-/A-81114474";
+                         break;
+                }
+                JOptionPane.showMessageDialog( null, "This URL Setting only applies if starting at Preorder step", "Warning", JOptionPane.WARNING_MESSAGE );
+            }
+            
+            
+        });
+      
+      myContainer.add(choiceList);
+      
+      
+      stepList = new JComboBox(stepStrings);
+      stepList.setSelectedIndex(1);
+      stepList.addActionListener(new ActionListener() {
+          
+            public void actionPerformed(ActionEvent evt) {
+                switch(stepList.getSelectedIndex()){
+                    case 0:
+                        choiceList.setVisible(true);
+                        JOptionPane.showMessageDialog( null, "Choose which item", "Warning", JOptionPane.WARNING_MESSAGE );
+                        break;
+                    case 1:
+                        choiceList.setVisible(false);
+                        break;
+                }
+                
+            }
+            
+            
+        });
+      
+      
+      myContainer.add(stepList);
+      
+      engineBtn = new JButton("Start");
+      myContainer.add(engineBtn);
+      engineBtn.addActionListener(this);
+      engineBtn.setActionCommand("Start");
+      
+      
+       //feedback=new JTextArea("Echo Echo ");       
+       //feedback.setBounds(10,30, 200,200);  
+       // myContainer.add(feedback);  
+
+
+}
+public void doSleep(int Length){
+        try{
+      TimeUnit.SECONDS.sleep(Length);  
+    }
+    catch(Exception e){
+
+    }
+}      
+public void doStepOne(){
+
+}
+public void doStepTwo(){
+    String preorderXpath ="//button[@data-test='preorderButton']";
+    currentStep = 2;
+    wait.until(ExpectedConditions.presenceOfElementLocated (By.xpath(preorderXpath)));
+    WebElement preorderButton = driver.findElement(By.xpath(preorderXpath));    
+    System.out.println("Looking for preorder button to click");
+    preorderButton.click();
+    System.out.println("Preorder button clicked");
+}
+public void catchStepTwoFailure(){
+    System.out.println("Didn't find preorder button. Reloading page.");
+    driver.navigate().refresh();
+}
+public void doStepThree(){
+    currentStep = 3;
+    String errorX ="//button[@data-test='errorContent-okButton']";
+    //"//div[@data-test='flyoutTypeAddToCartError']";
+    wait.until(ExpectedConditions.presenceOfElementLocated (By.xpath(errorX)));
+    WebElement errorB = driver.findElement(By.xpath(errorX)); 
+    //if (errorB.isDisplayed()){
+    System.out.println("Preorder button is displayed but clicking it is emitting error unavailable");
+    errorB.click();
+    isUnavail = true;
+    throw new NullPointerException("");
+  //}
+}public int catchStepThreeFailure(int tempStep){
+    if(isUnavail == true){
+        tempStep = tempStep - 1;
+        isUnavail = false;
+        System.out.println("Catch step three failure - Unavailable true, going back a step");
+    }
+    else{
+        tempStep = tempStep + 1;
+        System.out.println("Catch step three failure - Unavailable false, going forwards a step");
+    }
+        return tempStep;
+}
+public void doStepFour(){
+    currentStep = 4;
+    String declineCoverageXPATH = "//button[@data-test=\'espModalContent-declineCoverageButton\']";
+    wait.until(ExpectedConditions.presenceOfElementLocated (By.xpath(declineCoverageXPATH)));
+    WebElement declineCoverageButton = driver.findElement(By.xpath(declineCoverageXPATH));
+    declineCoverageButton.click();
+}
+public int catchStepFourFailure(int tempStep){
+    //go back to 3!
+    tempStep = tempStep - 1;
+    return tempStep;
+}
+public void doStepFive(){
+    currentStep = 5;
+    String viewCartXPATH = "//button[@data-test=\'addToCartModalViewCartCheckout\']";
+    wait.until(ExpectedConditions.presenceOfElementLocated (By.xpath(viewCartXPATH)));
+    WebElement viewCartButton = driver.findElement(By.xpath(viewCartXPATH));
+    viewCartButton.click();
+}
+public void doStepSix(){
+    currentStep = 6;
+    String checkoutXPATH = "//button[@data-test=\'checkout-button\']";
+    wait.until(ExpectedConditions.presenceOfElementLocated (By.xpath(checkoutXPATH)));
+    WebElement checkoutButton = driver.findElement(By.xpath(checkoutXPATH));
+    checkoutButton.click();
+}
+public void doStepSeven(){
+    currentStep = 7;
+    String addX = "(//button[@data-test='moveSFLToCartBtn'])[1]";
+    wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(addX)));
+    WebElement doAdd = driver.findElement(By.xpath(addX));
+    doAdd.click();
+}
+public void doStepEight(){
+    currentStep = 8;
+    String error ="//*[@data-test='form-error-alert-box']";
+    shortWait.until(ExpectedConditions.presenceOfElementLocated (By.xpath(error)));//if too fast then can it fail and get stuck at step 7 ? o_O
+    WebElement errorE = driver.findElement(By.xpath(error));
+    if (errorE.isDisplayed()){
+        System.out.println("Item(s) currently unavailable ");
+        isUnavail = true;
+        driver.navigate().refresh();
+
+        throw new NullPointerException("");
+    }
+}
+public int catchStepEightFailure(int tempStep){
+    if (isUnavail == true){
+      tempStep = tempStep - 1;
+      isUnavail = false;//reset var
+    }
+    else{
+     tempStep = tempStep + 1;
+     if (currentStep == 20){
+         tempStep = tempStep + 1;
+     }
+     System.out.println("****ITEM AVAILABLE***");
+    }  
+    return tempStep;
+}
+public void doStepNine(){
+    System.out.println("****ITEM AVAILABLE***");
+    //Only bad thing is now that the next step is delayed 5s looking for the above error
+
+    //driver.navigate().refresh();
+    //If all goes well this should error at 8 then be recalled to start at 9
+
+    currentStep = 9;//I might have to write this so this is the first step. And if it fails here a step 9 then go back to 7.  B.C I might have to login manually.???
+    String checkoutB = "//button[@data-test='checkout-button']";
+    wait.until(ExpectedConditions.presenceOfElementLocated (By.xpath(checkoutB)));
+    WebElement doCh = driver.findElement(By.xpath(checkoutB));
+    doCh.click();
+    //If it fails here i should do a shortwait if not her ethen skip to 19
+}
+public void doStepEighteen(){
+        currentStep = 18;
+        String cardXpath = "//input[@id='creditCardInput-cardNumber']";
+        shortWait.until(ExpectedConditions.presenceOfElementLocated (By.xpath(cardXpath)));
+        WebElement cardB = driver.findElement(By.xpath(cardXpath));
+        cardB.sendKeys(new String(ccField.getPassword())); 
+}
+public int catchStepEighteenFailure(int tempStep){
+    tempStep = tempStep + 2;
+    //verify button for CC wont be here   
+    return tempStep;
+}
+public void doStepNineteen(){
+    currentStep = 19;
+    String verfiyX = "//button[@data-test='verify-card-button']";
+    shortWait.until(ExpectedConditions.presenceOfElementLocated (By.xpath(verfiyX)));
+    WebElement verifyB = driver.findElement(By.xpath(verfiyX));
+    verifyB.click();
+}
+public void doStepTwenty(){
+    currentStep = 20;
+    String CCVXp = "//input[@id='creditCardInput-cvv']";
+    wait.until(ExpectedConditions.presenceOfElementLocated (By.xpath(CCVXp)));
+    WebElement CcvIn = driver.findElement(By.xpath(CCVXp));
+    String load = new String(ccField.getPassword());
+    CcvIn.sendKeys(load); //editme
+}
+//step inbetween which says "Save and Continue" 
+public void doStepTwentyandAHalf(){
+                            /* only for CC
+                      Step = 21;
+                     
+                      String verfiyXX = "//button[@data-test='save-and-continue-button']";
+                       wait.until(ExpectedConditions.presenceOfElementLocated (By.xpath(verfiyXX)));
+                      WebElement verifyBB = driver.findElement(By.xpath(verfiyX));
+                      verifyBB.click();
+                      */
+}
+public void doStepTwentyOne(){
+    //One is skipped eh
+    currentStep = 21;
+    String verfiyXXX = "//button[@data-test='placeOrderButton']";
+    wait.until(ExpectedConditions.presenceOfElementLocated (By.xpath(verfiyXXX)));
+    WebElement verifyBBB = driver.findElement(By.xpath(verfiyXXX));
+    verifyBBB.click();
+}
+                                                                                                                
+public void doALap(int SkipStep){
+    System.out.println("Calling doALap, SkipStep is " + SkipStep + "isDone is " + isDone);
+    while  (!isDone){
+        try{
+            //driver.get("https://www.target.com/p/playstation-5-console/-/A-81114595");
+            //driver.get("https://www.target.com/p/playstation-5-hd-camera/-/A-81114478");
+            if (SkipStep == 0){driver.get(URL);}
+            if (SkipStep == 0 || SkipStep <= 2){doStepTwo();}
+            if (SkipStep == 0 || SkipStep <= 3){doStepThree();}
+            if (SkipStep == 0 || SkipStep <= 4){doStepFour();}
+            if (SkipStep == 0 || SkipStep <= 5){doStepFive();}
+            if (SkipStep == 0 || SkipStep <= 6){doStepSix();}
+            if (SkipStep <= 7){doStepSeven(); }
+            if (SkipStep <= 8){doStepEight();}
+              doStepNine(); 
+           if (SkipStep<= 18){doStepEighteen();doStepNineteen();}
+              doStepTwenty();
+              doStepTwentyOne();
+           doSound();
+           isDone = true;    
+        }
+        catch(Exception e){
+            System.out.println("Failed at step: " + currentStep);
+            doSound();
+            doLoop();
+        }
+    }   
+} 
+public void doSound(){
+
+
+    try{
+        String failedPath;
+        boolean loop = false;
+        boolean doAudio = true;
+       // if (Step < 4){
+        failedPath = "C:\\Users\\kylea\\Downloads\\speech.wav";
+        //}
+         if (currentStep == 8){//Cart Screen - Error unavail
+            //loop = true;
+            if (isUnavail){
+                sleepLength = Integer.parseInt(sLength.getText()); //sigh i dont want to ddos. There's no point in short wait. It can be 30s. The stock is serverside. I got in twice earlier.
+            }
+            else if (!isUnavail){
+                sleepLength = 0; //down below will call doStart at step 9 to click proceed
+            }
+            failedPath = "C:\\Users\\kylea\\Downloads\\alarm.wav"; 
+            doAudio = false;
+        }
+        else if (currentStep >= 9){//9 is cant find error and fails at finding checkout button. may throw false positive. it's ok.
+            sleepLength = 0;
+            failedPath = "C:\\Users\\kylea\\Downloads\\alarm.wav"; 
+            isDone = true;
+            doAudio = true;
+            //driver.navigate().refresh();
+        }
+        else if (currentStep == 2){
+            failedPath = "C:\\Users\\kylea\\Downloads\\speech.wav"; 
+            sleepLength = Integer.parseInt(sLength.getText());
+        }
+        else{
+            failedPath = "C:\\Users\\kylea\\Downloads\\alarm.wav"; 
+            if (currentStep <= 3 || currentStep >=9){
+                loop = true;
+            }
+        }
+       if (doAudio && currentStep != 8){
+           // System.out.println("WTFF!!!!!!");
+            AudioInputStream failed =  AudioSystem.getAudioInputStream(new File(failedPath).getAbsoluteFile()); 
+            Clip failedClip = AudioSystem.getClip(); 
+            failedClip.open(failed); 
+            failedClip.start();
+            if (loop){
+              failedClip.loop(Clip.LOOP_CONTINUOUSLY); 
+            }
+       }
+       TimeUnit.SECONDS.sleep(sleepLength);//at the moment this also applies to the step 3 failure is aunavailable true whereas the click delay between preorder and OK on error
+      }
+      catch(IOException | InterruptedException | LineUnavailableException | UnsupportedAudioFileException ee){
+          System.out.println("exception " + ee);
+      }
+   }
+
+
+public void catchStepTwentyFailure(){
+    
+}
+
+
+
+
+public void doLoop (){
+     // driver.quit();
+      //System.exit(0);
+      int tempStep = currentStep;
+      isDone = true;//stop current loop?
+      switch(currentStep){
+          case 8:
+              tempStep = catchStepEightFailure(tempStep);
+              break;
+          case 18:
+               tempStep = catchStepEighteenFailure(tempStep);
+              break;
+          case 2:
+              catchStepTwoFailure();
+              break;
+          case 20:
+              catchStepTwentyFailure();
+              break;
+          case 3:
+               tempStep = catchStepThreeFailure(tempStep);
+               break;
+      }
+    //if ( ( currentStep >= 4 && currentStep < 7 ) ) {
+      
+      System.out.println("Failed at step %s" + currentStep + " retrying the loop starting at" + tempStep);
+      isDone = false;
+      this.doALap(tempStep);
+  //}
+}
+    
+public void startIgnition(){
+    doSleep(1);
+    JOptionPane.showMessageDialog( null, "You have 15 seconds to login before automation starts.", "Warning", JOptionPane.WARNING_MESSAGE );
+    System.setProperty("webdriver.chrome.driver", "D:\\\\Python\\\\Chromedriver\\\\chromedriver.exe");
+    driver = new ChromeDriver();
+    driver.get("https://www.target.com"); //if it adds or i get it to add..
+    //driver.get("https://www.target.com/p/playstation-5-console/-/A-81114595");
+    wait = new WebDriverWait(driver, Integer.parseInt(Wait.getText()) );
+    shortWait = new WebDriverWait(driver,Integer.parseInt(sWait.getText()));
+    shorterWait = new WebDriverWait(driver,Integer.parseInt(serWait.getText()));
+    doSleep(15);
+    //this.doALap(0);
+    int startingLap = 0;
+    if (stepList.getSelectedIndex() == 1){
+        driver.get("https://www.target.com/co-cart");
+        startingLap = 7;
+    }
+    this.doALap(startingLap); // if it adds or i get it to add..
+    // engineBtn.setText("Stop");
+    //engineBtn.setActionCommand("Stop");  
+    // engineBtn.setVisible(false);
+} 
+public void actionPerformed(ActionEvent evt) {
+        if( evt.getActionCommand().equals( "Start" ) ) {
+            try {
+
+                startIgnition();
+
+
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog( null, "Invalid Input!", "Error", JOptionPane.ERROR_MESSAGE );
+            }
+        }
+    if( evt.getActionCommand().equals( "Stop" ) ) {
+    try {
+        isDone = true;
+        driver.quit();
+        engineBtn.setText("Start");
+        engineBtn.setActionCommand("Start");
+
+    } catch (NumberFormatException e) {
+        JOptionPane.showMessageDialog( null, "Invalid Input!", "Error", JOptionPane.ERROR_MESSAGE );
+    }
+    }
+    else {
+            System.out.println( "Clicked!" );
+    }
+}
+        
+}
+
+
+
+                      /*
+                      Step = 8;
+                      String shipping ="(//input[contains(@id,'ulfillment-options')])[1]";
+                      wait.until(ExpectedConditions.presenceOfElementLocated (By.xpath(shipping)));
+                      WebElement doShipping = driver.findElement(By.xpath(shipping));
+                      doShipping.click();
+                      */
+                      //otherwise 8 start here -.-
+
+   
+                      /*
+                      //it might have a login screen around here which I think is blocked unless I try more testing on it lol
+                      Step = 10;
+                      String saveandContinue = "//button[@data-test='save-and-continue-button']";
+                        wait.until(ExpectedConditions.presenceOfElementLocated (By.xpath(saveandContinue)));
+                      WebElement savecB = driver.findElement(By.xpath(saveandContinue));
+                      savecB.click();
+                      
+                      */
+                      
+                      
+                      /* First time payment setup only
+                        Step = 11;
+
+                     String firstNameXpath = "//input[@id='full_name']";
+                        wait.until(ExpectedConditions.presenceOfElementLocated (By.xpath(firstNameXpath)));
+                        WebElement fNBt = driver.findElement(By.xpath(firstNameXpath));
+                        fNBt.sendKeys("");
+
+                        Step = 12;
+                        String addressXpath = "//input[@id='address_line1']";
+                        WebElement adBt = driver.findElement(By.xpath(addressXpath));
+                        adBt.sendKeys("");
+
+                        Step = 13;
+                        //input[@id='']
+                        String zipcodeXpath = "//*[@id='zip_code']";
+                        WebElement ziBt = driver.findElement(By.xpath(zipcodeXpath));
+                        ziBt.clear();
+                        ziBt.sendKeys("");
+
+                        Step = 14;
+                        //input[@id='city']
+                        String cityXpath = "//input[@id='city']";
+                        WebElement ciBt = driver.findElement(By.xpath(cityXpath));
+                        ciBt.clear();
+                        ciBt.sendKeys("");
+
+
+                        Step = 15;
+                        //*[@id='state']
+                        String stateXpath = "//*[@id='state']";
+                        WebElement stBt = driver.findElement(By.xpath(stateXpath));
+                        //stBt.click();
+                        stBt.sendKeys(""); //JS Set value?
+
+                        Step = 16;
+                        //input[@id='mobile']
+                        String phoneXpath = "//*[@id='mobile']";
+                        WebElement phBt = driver.findElement(By.xpath(phoneXpath));
+                        phBt.sendKeys("");
+
+                        Step = 17;
+                        //button[@data-test='saveButton']
+                        String continueXpath = "//button[@data-test='saveButton']";
+                         wait.until(ExpectedConditions.presenceOfElementLocated (By.xpath(continueXpath)));
+                        WebElement continueB = driver.findElement(By.xpath(continueXpath));
+                        continueB.click();
+                         */
+
+
+                      
+                        /* only for CC
+                      Step = 21;
+                     
+                      String verfiyXX = "//button[@data-test='save-and-continue-button']";
+                       wait.until(ExpectedConditions.presenceOfElementLocated (By.xpath(verfiyXX)));
+                      WebElement verifyBB = driver.findElement(By.xpath(verfiyX));
+                      verifyBB.click();
+                      */
+
+
